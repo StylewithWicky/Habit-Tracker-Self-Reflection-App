@@ -1,26 +1,15 @@
-from flask import request,jsonify,Blueprint
-from models import db, User
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
 
-user_bp = Blueprint('user_bp', __name__)
+db=SQLAlchemy()
 
-@user_bp.route('/register' , methods=['POST'])
-def register():
-    data=request.get_json()
-    username=data.get('username').strip()
-    email=data.get('email').strip().lower()
-    password=data.get('password').strip()
+class User(db.Model):
+    id=db.Column(db.Integer,primary_key=True ,autoincrement=True)
+    username=db.Column(db.String, nullable=False)
+    email=db.Column(db.String, nullable=False)
+    password_hash=db.Column(db.String, nullable=False)
 
-
-    if not username or not email or not password:
-        return jsonify({'error':'Authentication required'}),400
-    
-    if User.query.filter_by(email=email).first():
-        return jsonify ({'error':'Email registered'}),400
-
-    user=User(username=username ,email=email)
-    user.set_password(password)
-
-    db.session.add(user)
-    db.session.commit()
-
-    return jsonify({'message':'User registered succesfully'}),201
+    def set_password(self,password):
+        self.password_hash=generate_password_hash(password)
+    def check_password(self,password):
+        return check_password_hash(self.password_hash,password)

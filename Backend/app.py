@@ -2,7 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 from models import db
 from config import Config
-from models.auth_routes import user_bp
+from controllers.auth_controllers import user_bp
 
 app=Flask(__name__)
 app.config.from_object(Config)
