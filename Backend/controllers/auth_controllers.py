@@ -22,7 +22,7 @@ def register():
 
 
     if not username or not email or not password:
-        return jsonify({'error':'Authentication required'}),400
+        return jsonify({'error':'Personal information required'}),400
     
     if User.query.filter_by(email=email).first():
         return jsonify ({'error':'Email registered'}),400
@@ -34,13 +34,6 @@ def register():
     user=User(username=username ,email=email)
     user.set_password(password)
 
-    
-
-
-        email = data.get('email', '').strip().lower()
-
-        if not is_valid_email(email):
-            return jsonify({'error': 'Invalid email address'}), 400
 
     db.session.add(user)
     db.session.commit()
