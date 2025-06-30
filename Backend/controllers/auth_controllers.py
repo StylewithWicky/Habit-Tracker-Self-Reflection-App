@@ -1,7 +1,17 @@
 from flask import request,jsonify,Blueprint
 from models import db, User
+from email_validator import validate_email, EmailNotValidError
 
 user_bp = Blueprint('user_bp', __name__)
+
+
+def is_valid_email(email):
+        try:
+            validate_email(email)
+            return True
+        except EmailNotValidError:
+            return False
+
 
 @user_bp.route('/register' , methods=['POST'])
 def register():
@@ -16,9 +26,21 @@ def register():
     
     if User.query.filter_by(email=email).first():
         return jsonify ({'error':'Email registered'}),400
+    
+    if not is_valid_email(email):
+        return jsonify({'error': 'Invalid email address'}), 400
+
 
     user=User(username=username ,email=email)
     user.set_password(password)
+
+    
+
+
+        email = data.get('email', '').strip().lower()
+
+        if not is_valid_email(email):
+            return jsonify({'error': 'Invalid email address'}), 400
 
     db.session.add(user)
     db.session.commit()
