@@ -2,7 +2,7 @@ from flask import Blueprint,jsonify,request
 from models import User
 from werkzeug.security import generate_password_hash, check_password_hash
 
-login_bg=Blueprint('login_bg', __name__)
+login_bp=Blueprint('login_bg', __name__)
 def login():
     data=request.get_json()
     email=data.get('email','').strip()
